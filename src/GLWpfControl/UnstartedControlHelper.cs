@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
@@ -19,7 +16,7 @@ namespace OpenTK.Wpf
                 var height = control.ActualHeight;
                 drawingContext.DrawRectangle(Brushes.Gray, null, new Rect(0, 0, width, height));
 
-                if(!Debugger.IsAttached) // Do not show the message if we're not debugging
+                if (!Debugger.IsAttached) // Do not show the message if we're not debugging
                 {
                     return;
                 }

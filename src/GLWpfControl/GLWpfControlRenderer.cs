@@ -1,24 +1,25 @@
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.Wgl;
+using OpenTK.Wpf.Interop;
 using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Graphics.Wgl;
-using OpenTK.Wpf.Interop;
 
 namespace OpenTK.Wpf
 {
 
     /// Renderer that uses DX_Interop for a fast-path.
-    internal sealed class GLWpfControlRenderer {
-        
+    internal sealed class GLWpfControlRenderer
+    {
+
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
         private readonly DxGlContext _context;
-        
+
         public event Action<TimeSpan> GLRender;
         public event Action GLAsyncRender;
-        
+
         private DxGLFramebuffer _framebuffer;
 
         /// The OpenGL framebuffer handle.
@@ -26,10 +27,10 @@ namespace OpenTK.Wpf
 
         /// The OpenGL Framebuffer width
         public int Width => _framebuffer?.FramebufferWidth ?? 0;
-        
+
         /// The OpenGL Framebuffer height
         public int Height => _framebuffer?.FramebufferHeight ?? 0;
-        
+
         private TimeSpan _lastFrameStamp;
 
 
@@ -39,18 +40,23 @@ namespace OpenTK.Wpf
         }
 
 
-        public void SetSize(int width, int height, double dpiScaleX, double dpiScaleY, Format format) {
-            if (_framebuffer == null || _framebuffer.Width != width || _framebuffer.Height != height) {
+        public void SetSize(int width, int height, double dpiScaleX, double dpiScaleY, Format format)
+        {
+            if (_framebuffer == null || _framebuffer.Width != width || _framebuffer.Height != height)
+            {
                 _framebuffer?.Dispose();
                 _framebuffer = null;
-                if (width > 0 && height > 0) {
+                if (width > 0 && height > 0)
+                {
                     _framebuffer = new DxGLFramebuffer(_context, width, height, dpiScaleX, dpiScaleY, format);
                 }
             }
         }
 
-        public void Render(DrawingContext drawingContext) {
-            if (_framebuffer == null) {
+        public void Render(DrawingContext drawingContext)
+        {
+            if (_framebuffer == null)
+            {
                 return;
             }
             var curFrameStamp = _stopwatch.Elapsed;

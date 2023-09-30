@@ -1,9 +1,10 @@
-using System;
 using JetBrains.Annotations;
 using OpenTK.Windowing.Common;
 
-namespace OpenTK.Wpf {
-    public sealed class GLWpfControlSettings {
+namespace OpenTK.Wpf
+{
+    public sealed class GLWpfControlSettings
+    {
         /// If the render event is fired continuously whenever required.
         /// Disable this if you want manual control over when the rendered surface is updated.
         public bool RenderContinuously { get; set; } = true;
@@ -32,10 +33,12 @@ namespace OpenTK.Wpf {
 
         /// If we are using an external context for the control.
         public bool IsUsingExternalContext => ContextToUse != null;
-        
+
         /// Creates a copy of the settings.
-        internal GLWpfControlSettings Copy() {
-            var c = new GLWpfControlSettings {
+        internal GLWpfControlSettings Copy()
+        {
+            var c = new GLWpfControlSettings
+            {
                 ContextToUse = ContextToUse,
                 BindingsContext = BindingsContext,
                 GraphicsContextFlags = GraphicsContextFlags,
@@ -51,20 +54,25 @@ namespace OpenTK.Wpf {
 
         /// Determines if two settings would result in the same context being created.
         [Pure]
-        internal static bool WouldResultInSameContext([NotNull] GLWpfControlSettings a, [NotNull] GLWpfControlSettings b) {
-            if (a.MajorVersion != b.MajorVersion) {
+        internal static bool WouldResultInSameContext([NotNull] GLWpfControlSettings a, [NotNull] GLWpfControlSettings b)
+        {
+            if (a.MajorVersion != b.MajorVersion)
+            {
                 return false;
             }
 
-            if (a.MinorVersion != b.MinorVersion) {
+            if (a.MinorVersion != b.MinorVersion)
+            {
                 return false;
             }
 
-            if (a.GraphicsProfile != b.GraphicsProfile) {
+            if (a.GraphicsProfile != b.GraphicsProfile)
+            {
                 return false;
             }
 
-            if (a.GraphicsContextFlags != b.GraphicsContextFlags) {
+            if (a.GraphicsContextFlags != b.GraphicsContextFlags)
+            {
                 return false;
             }
 

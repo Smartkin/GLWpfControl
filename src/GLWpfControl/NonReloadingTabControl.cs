@@ -14,7 +14,8 @@ namespace OpenTK.Wpf
     {
         private Panel _itemsHolderPanel;
 
-        public NonReloadingTabControl() {
+        public NonReloadingTabControl()
+        {
             // This is necessary so that we get the initial databound selected item
             ItemContainerGenerator.StatusChanged += ItemContainerGenerator_StatusChanged;
         }

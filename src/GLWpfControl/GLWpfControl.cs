@@ -1,13 +1,12 @@
+using JetBrains.Annotations;
+using OpenTK.Wpf.Interop;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using JetBrains.Annotations;
-using OpenTK.Wpf.Interop;
 
 namespace OpenTK.Wpf
 {
@@ -78,7 +77,8 @@ namespace OpenTK.Wpf
 
         /// If this control is rendering continuously.
         /// If this is false, then redrawing will only occur when <see cref="UIElement.InvalidateVisual"/> is called.
-        public bool RenderContinuously {
+        public bool RenderContinuously
+        {
             get => Settings.RenderContinuously;
             set => Settings.RenderContinuously = value;
         }
@@ -87,17 +87,17 @@ namespace OpenTK.Wpf
         /// It could differ from UIElement.RenderSize if UseDeviceDpi setting is set.
         /// To be used for operations related to OpenGL viewport calls (glViewport, glScissor, ...).
         public int FrameBufferWidth => _renderer?.Width ?? 0;
-        
+
         /// Pixel height of the underlying OpenGL framebuffer.
         /// It could differ from UIElement.RenderSize if UseDeviceDpi setting is set.
         /// To be used for operations related to OpenGL viewport calls (glViewport, glScissor, ...).
         public int FrameBufferHeight => _renderer?.Height ?? 0;
 
         private TimeSpan _lastRenderTime = TimeSpan.FromSeconds(-1);
-		
-		public bool CanInvokeOnHandledEvents { get; set; } = true;
-		
-		public bool RegisterToEventsDirectly { get; set; } = true;
+
+        public bool CanInvokeOnHandledEvents { get; set; } = true;
+
+        public bool RegisterToEventsDirectly { get; set; } = true;
 
         /// <summary>
         /// Used to create a new control. Before rendering can take place, <see cref="Start(GLWpfControlSettings)"/> must be called.
@@ -128,7 +128,8 @@ namespace OpenTK.Wpf
         /// </exception>
         public void Start(GLWpfControlSettings settings)
         {
-            if (_isStarted) {
+            if (_isStarted)
+            {
                 throw new InvalidOperationException($"{nameof(Start)} must only be called once for a given {nameof(GLWpfControl)}");
             }
 
@@ -138,41 +139,49 @@ namespace OpenTK.Wpf
             _renderer = new GLWpfControlRenderer(Settings);
             _renderer.GLRender += timeDelta => Render?.Invoke(timeDelta);
             _renderer.GLAsyncRender += () => AsyncRender?.Invoke();
-            IsVisibleChanged += (_, args) => {
-                if ((bool) args.NewValue) {
+            IsVisibleChanged += (_, args) =>
+            {
+                if ((bool)args.NewValue)
+                {
                     CompositionTarget.Rendering += OnCompTargetRender;
                 }
-                else {
+                else
+                {
                     CompositionTarget.Rendering -= OnCompTargetRender;
                 }
             };
 
             // Inheriting directly from a FrameworkElement has issues with receiving certain events -- register for these events directly
             if (RegisterToEventsDirectly)
-	        {
-	            EventManager.RegisterClassHandler(typeof(Control), Keyboard.KeyDownEvent, new KeyEventHandler(OnKeyDown), CanInvokeOnHandledEvents);
-		        EventManager.RegisterClassHandler(typeof(Control), Keyboard.KeyUpEvent, new KeyEventHandler(OnKeyUp), CanInvokeOnHandledEvents);
-	        }
-			
-            Loaded += (a, b) => {
+            {
+                EventManager.RegisterClassHandler(typeof(Control), Keyboard.KeyDownEvent, new KeyEventHandler(OnKeyDown), CanInvokeOnHandledEvents);
+                EventManager.RegisterClassHandler(typeof(Control), Keyboard.KeyUpEvent, new KeyEventHandler(OnKeyUp), CanInvokeOnHandledEvents);
+            }
+
+            Loaded += (a, b) =>
+            {
                 InvalidateVisual();
             };
             Unloaded += (a, b) => OnUnloaded();
             Ready?.Invoke();
         }
-        
-        private void SetupRenderSize() {
-            if (_renderer == null || Settings == null) {
+
+        private void SetupRenderSize()
+        {
+            if (_renderer == null || Settings == null)
+            {
                 return;
             }
 
             var dpiScaleX = 1.0;
             var dpiScaleY = 1.0;
 
-            if (Settings.UseDeviceDpi) {
+            if (Settings.UseDeviceDpi)
+            {
                 var presentationSource = PresentationSource.FromVisual(this);
                 // this can be null in the case of not having any visual on screen, such as a tabbed view.
-                if (presentationSource != null) {
+                if (presentationSource != null)
+                {
                     Debug.Assert(presentationSource.CompositionTarget != null, "presentationSource.CompositionTarget != null");
 
                     var transformToDevice = presentationSource.CompositionTarget.TransformToDevice;
@@ -182,12 +191,12 @@ namespace OpenTK.Wpf
             }
 
             var format = Settings.TransparentBackground ? Format.A8R8G8B8 : Format.X8R8G8B8;
-            _renderer?.SetSize((int) RenderSize.Width, (int) RenderSize.Height, dpiScaleX, dpiScaleY, format);
+            _renderer?.SetSize((int)RenderSize.Width, (int)RenderSize.Height, dpiScaleX, dpiScaleY, format);
         }
 
         private void OnUnloaded()
         {
-            _renderer?.SetSize(0,0, 1, 1, Format.X8R8G8B8);
+            _renderer?.SetSize(0, 0, 1, 1, Format.X8R8G8B8);
         }
 
         // Raise the events so they're received if you subscribe to the base control's events
@@ -216,7 +225,7 @@ namespace OpenTK.Wpf
         private void OnCompTargetRender(object sender, EventArgs e)
         {
             var currentRenderTime = (e as RenderingEventArgs)?.RenderingTime;
-            if(currentRenderTime == _lastRenderTime)
+            if (currentRenderTime == _lastRenderTime)
             {
                 // It's possible for Rendering to call back twice in the same frame
                 // so only render when we haven't already rendered in this frame.
@@ -229,29 +238,34 @@ namespace OpenTK.Wpf
             if (RenderContinuously) InvalidateVisual();
         }
 
-        protected override void OnRender(DrawingContext drawingContext) {
+        protected override void OnRender(DrawingContext drawingContext)
+        {
             var isDesignMode = DesignerProperties.GetIsInDesignMode(this);
-            if (isDesignMode) {
+            if (isDesignMode)
+            {
                 DesignTimeHelper.DrawDesignTimeHelper(this, drawingContext);
             }
-            else if(_renderer != null) {
+            else if (_renderer != null)
+            {
                 SetupRenderSize();
                 _renderer?.Render(drawingContext);
             }
-            else {
+            else
+            {
                 UnstartedControlHelper.DrawUnstartedControlHelper(this, drawingContext);
             }
 
             base.OnRender(drawingContext);
         }
-        
+
         protected override void OnRenderSizeChanged(SizeChangedInfo info)
         {
             var isInDesignMode = DesignerProperties.GetIsInDesignMode(this);
-            if (isInDesignMode) {
+            if (isInDesignMode)
+            {
                 return;
             }
-            
+
             if ((info.WidthChanged || info.HeightChanged) && (info.NewSize.Width > 0 && info.NewSize.Height > 0))
             {
                 InvalidateVisual();
