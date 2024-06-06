@@ -17,6 +17,7 @@ namespace OpenTK.Wpf
     ///
     ///     Please do not extend this class. It has no support for that.
     /// </summary>
+    [TypeConverter(typeof(GLWpfControlConverter))]
     public class GLWpfControl : FrameworkElement
     {
         // -----------------------------------

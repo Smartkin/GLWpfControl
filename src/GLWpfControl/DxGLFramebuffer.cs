@@ -130,6 +130,7 @@ namespace OpenTK.Wpf
             GL.DeleteTexture(GLSharedTextureHandle);
             Wgl.DXUnregisterObjectNV(DxGlContext.GlDeviceHandle, DxInteropRegisteredHandle);
             DXInterop.Release(DxRenderTargetHandle);
+            GC.SuppressFinalize(this);
         }
     }
 }
