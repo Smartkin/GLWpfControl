@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using OpenTK.Wpf.Interop;
 using System;
 using System.ComponentModel;
