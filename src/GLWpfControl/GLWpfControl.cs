@@ -9,6 +9,7 @@ using System.Windows.Media;
 using OpenTK.Wpf.Interop;
 using System.Windows.Interop;
 using OpenTK.Windowing.Common;
+using System.Globalization;
 
 namespace OpenTK.Wpf
 {
