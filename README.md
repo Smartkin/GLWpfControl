@@ -7,11 +7,11 @@ Supported configurations:
 - .Net Framework for OpenTK 3.x (the 3.x series NuGet packages)
 - .Net Core for OpenTK 4.x (the 4.x series NuGet packages)
 
-Since version 3.0.0, we're using full OpenGL/DirectX interop via OpenGL extensions - [NV_DX_interop](https://www.khronos.org/registry/OpenGL/extensions/NV/WGL_NV_DX_interop.txt). This should run almost everywhere with **AMAZING PERFORMANCE** and is fully supported on Intel, AMD and Nvidia graphics.
+Since version 3.0.0, we're using full OpenGL/DirectX interop via OpenGL extensions - [NV_DX_interop](https://www.khronos.org/registry/OpenGL/extensions/NV/WGL_NV_DX_interop.txt).
+This should run almost everywhere with **AMAZING PERFORMANCE** and is fully supported on Intel, AMD and Nvidia graphics.
 
-This offers a way more clean solution than embedding GLControl and totally solves [the airspace problem](https://stackoverflow.com/questions/8006092/controls-dont-show-over-winforms-host). As controls can be layered, nested and structured over your 3D view.
-
-This package is intended to supercede the legacy *GLControl* completely, and we strongly encourage upgrading to this native WPF control instead.
+This offers a way more clean solution than embedding GLControl and totally solves [the airspace problem](https://stackoverflow.com/questions/8006092/controls-dont-show-over-winforms-host).
+As controls can be layered, nested and structured over your 3D view.
 
 ## Getting started:
 
@@ -56,7 +56,16 @@ This package is intended to supercede the legacy *GLControl* completely, and we 
     ```
 For additional examples, see [MainWindow.xaml](https://github.com/opentk/GLWpfControl/blob/master/src/Example/MainWindow.xaml) and [MainWindow.xaml.cs](https://github.com/opentk/GLWpfControl/blob/master/src/Example/MainWindow.xaml.cs) in the example project.
 
+### I can't receive keyboard input when my control doesn't have keyboard focus!
 
+WPF by design only sends keyboard events to the control that has keybaord focus. To be able to get keyboard focus a control needs to have `Focusable==true` (this is the default for GLWpfControl) and `IsVisible==true`.
+
+If you however need to get keyboard events idependent of keyboard focus you will have to use the `Keyboard.AddPreview*` functions.
+These functions allow you to register a preview event that is called before the control with keyboard focus gets the keyboard event.
+
+This replaces the old `CanInvokeOnHandledEvents` and `RegisterToEventsDirectly` settings.
+
+See [Example](./src/Example/TabbedMainWindowTest.xaml.cs) for an example how to set this up.
 
 ## Build instructions
 
@@ -78,4 +87,7 @@ For additional examples, see [MainWindow.xaml](https://github.com/opentk/GLWpfCo
 
 #### DX-Hijacking rendering
 
-It's possible to bypass the RTT that takes place in WPF D3dImage by stealing the actual D3d handle from WPF and drawing manually. This is incredibly challenging, but would offer APEX performance as zero indirection is required. Currently more of an idea than a work in progress. Contributions welcome - Drop by the [Discord](https://discord.gg/6HqD48s) server if you want to give this a shot!
+It's possible to bypass the RTT that takes place in WPF D3dImage by stealing the actual D3d handle from WPF and drawing manually.
+This is incredibly challenging, but would offer APEX performance as zero indirection is required.
+Currently more of an idea than a work in progress.
+Contributions welcome - Drop by the [Discord](https://discord.gg/6HqD48s) server if you want to give this a shot!
